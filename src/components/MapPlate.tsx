@@ -208,7 +208,7 @@ export function MapPlate({
       if (owner === -1) {
         ctx.fillStyle = PAPER_DEEP;
       } else if (mode === "hold") {
-        ctx.fillStyle = inkWash(owner, activeClan === -1 || activeClan === owner ? 1 : 0.5);
+        ctx.fillStyle = inkWash(owner, activeClan === -1 || activeClan === owner ? 1 : 0.82);
       } else {
         ctx.fillStyle = inkWash(owner, contested.has(i) ? 0.72 : 0.12);
       }
@@ -258,7 +258,33 @@ export function MapPlate({
       ctx.stroke();
     }
 
-    /* 4. Whatever the reader is pointing at. */
+    /* 4. The whole territory the reader is pointing into.
+       Outlined rather than isolated by dimming everything else: a map that
+       washes out on every pointer move stops being a printed plate and starts
+       being a web app, and the reader loses the shape they were reading. */
+    if (activeClan !== -1) {
+      ctx.beginPath();
+      for (let i = 0; i < HEX_COUNT; i++) {
+        if (board.owner[i] !== activeClan) continue;
+        const c = at(i);
+        const pts = corners(c.x, c.y, size);
+        for (let d = 0; d < 6; d++) {
+          const n = neighbourInDirection(i, d);
+          if (n !== null && board.owner[n] === activeClan) continue;
+          const [a, b2] = edgeCorners(d);
+          ctx.moveTo(pts[a][0], pts[a][1]);
+          ctx.lineTo(pts[b2][0], pts[b2][1]);
+        }
+      }
+      ctx.strokeStyle = PAPER_LIT;
+      ctx.lineWidth = Math.max(4, size * 0.3);
+      ctx.stroke();
+      ctx.strokeStyle = INK;
+      ctx.lineWidth = Math.max(1.8, size * 0.15);
+      ctx.stroke();
+    }
+
+    /* 5. Whatever the reader is pointing at. */
     if (active !== null) {
       path(active);
       ctx.strokeStyle = INK;
@@ -270,7 +296,7 @@ export function MapPlate({
       ctx.stroke();
     }
 
-    /* 5. Hexes with a vote open on them. */
+    /* 6. Hexes with a vote open on them. */
     for (const w of board.wars) {
       const c = at(w.hex);
       ctx.strokeStyle = WAR;
@@ -280,7 +306,7 @@ export function MapPlate({
       ctx.stroke();
     }
 
-    /* 6. Territory tags. */
+    /* 7. Territory tags. */
     if (size > 9) {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
