@@ -219,17 +219,17 @@ export function Faq() {
 
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-16">
-      <div className="lg:sticky lg:top-24 lg:self-start">
+      <div className="lg:sticky lg:top-0 lg:self-start">
         <Label>Everything that is fixed</Label>
         <dl className="mt-4 divide-y divide-rule border-y border-rule">
           {rows.map(([k, v]) => (
             <div key={k} className="flex items-baseline justify-between gap-4 py-2.5">
-              <dt className="type-label text-ink-mute">{k}</dt>
-              <dd className="type-data max-w-[58%] text-right text-ink">{v}</dd>
+              <dt className="type-label text-chalk-muted">{k}</dt>
+              <dd className="type-data max-w-[58%] text-right text-chalk">{v}</dd>
             </div>
           ))}
         </dl>
-        <p className="type-data mt-3 text-ink-mute">
+        <p className="type-data mt-3 text-chalk-muted">
           At the simulated season&apos;s volume, one hex pays {formatEth(b.perHex, 4)} ETH a day
           and a seat in a clan at capacity takes {formatEth(b.perHex / 2n, 4)} ETH.
         </p>
@@ -238,8 +238,8 @@ export function Faq() {
       <dl className="grid gap-x-10 gap-y-7 sm:grid-cols-2">
         {QUESTIONS.map((item) => (
           <div key={item.q}>
-            <dt className="type-sub text-ink">{item.q}</dt>
-            <dd className="type-body mt-2 text-ink-soft">{item.a}</dd>
+            <dt className="type-title text-chalk">{item.q}</dt>
+            <dd className="type-body mt-2 text-chalk-soft">{item.a}</dd>
           </div>
         ))}
       </dl>

@@ -78,6 +78,26 @@ whoever has the most money. What differs between two hexes is who is standing
 on the other side of them — which is why the only heavy line on the map is the
 front.
 
+## The shape of the site
+
+One screen, no scroll on desktop: the board fills it, the pitch sits beside it,
+and everything else opens over the top and closes back to the map. Pick a hex
+and a sheet slides in from the right with that hex's clan, its garrison, what
+it costs to take, and the vote if there is one. The explanation lives in an
+overlay with four tabs rather than below a fold that does not exist. On a
+phone the map takes the top of the screen and the page scrolls like a page —
+cramming both into one portrait screen means either a map too small to read or
+copy printed over it.
+
+The skin is PLOTLAND's: deep navy ground, heavy uppercase display with a gold
+keyline, mono for every number. Two reservations carry the map. **Colour means
+claimed** — an unowned hex is a hairline on the void and takes a banner's
+colour only when somebody is standing on it. **Gold means a vote is open** —
+one hex, one halo, and before a single vote is open there is no gold on the map
+at all. What is drawn heaviest after that is the front, in chalk, because
+every hex pays the same and the only thing that makes ground interesting is
+who is on the other side of it.
+
 ## What is on the page and where it comes from
 
 Nothing is deployed. The board is a 74-epoch season played by these exact
@@ -135,3 +155,5 @@ None of these are faked anywhere on the site; the FAQ carries the first two.
   runs.
 - The dev server is on port 3216; 3100, 3210, 3212 and 3214 are taken by
   sibling projects on this machine.
+- The twelve banner colours deliberately avoid the yellow-orange band. A clan
+  the colour of gold would look like it was permanently on fire.

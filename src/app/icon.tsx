@@ -14,22 +14,21 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#efeae0",
+          background: "#081426",
         }}
       >
         <svg width="52" height="52" viewBox="0 0 24 24" fill="none">
           <path
             d="M17 5.42 22 12l-5 6.58H7L2 12l5-6.58Z"
             fill="none"
-            stroke="#1a1d24"
-            strokeOpacity="0.32"
-            strokeWidth="1.6"
+            stroke="#f2a71b"
+            strokeWidth="1.8"
             strokeLinejoin="round"
           />
           <path
             d="M17 5.42 22 12l-5 6.58"
-            stroke="#1a1d24"
-            strokeWidth="3"
+            stroke="#ffffff"
+            strokeWidth="3.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />

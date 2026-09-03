@@ -168,7 +168,10 @@ export function formatEth(wei: bigint, dp = 3): string {
 
 export function formatTokens(wei: bigint): string {
   const whole = wei / WAD;
-  if (whole >= 1_000_000n) return `${(Number(whole) / 1_000_000).toFixed(whole >= 10_000_000n ? 0 : 1)}M`;
+  if (whole >= 1_000_000_000n)
+    return `${(Number(whole) / 1_000_000_000).toFixed(whole % 1_000_000_000n === 0n ? 0 : 1)}B`;
+  if (whole >= 1_000_000n)
+    return `${(Number(whole) / 1_000_000).toFixed(whole >= 10_000_000n ? 0 : 1)}M`;
   if (whole >= 1_000n) return `${(Number(whole) / 1_000).toFixed(0)}K`;
   return whole.toLocaleString("en-US");
 }

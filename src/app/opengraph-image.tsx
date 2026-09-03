@@ -25,7 +25,7 @@ export default function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#efeae0",
+          background: "#081426",
           padding: 72,
           fontFamily: "sans-serif",
         }}
@@ -36,14 +36,14 @@ export default function OpengraphImage() {
               fontSize: 20,
               letterSpacing: 6,
               textTransform: "uppercase",
-              color: "#1a1d24",
+              color: "#ffffff",
             }}
           >
             {siteConfig.name}
           </div>
           {/* One text node per div: Satori refuses a div with two children
               unless it is told how to lay them out. */}
-          <div style={{ fontSize: 20, letterSpacing: 4, color: "#62666e" }}>
+          <div style={{ fontSize: 20, letterSpacing: 4, color: "#7d97b3" }}>
             {`${HEX_COUNT} HEXES`}
           </div>
         </div>
@@ -56,18 +56,18 @@ export default function OpengraphImage() {
                 style={{
                   width: 56,
                   height: 56,
-                  background: i < 41 ? "#3b5a76" : "transparent",
-                  border: i < 41 ? "none" : "2px solid rgba(26,29,36,0.32)",
+                  background: i < 41 ? "#f2a71b" : "transparent",
+                  border: i < 41 ? "none" : "2px solid rgba(140,185,230,0.34)",
                 }}
               />
             ))}
           </div>
-          <div style={{ fontSize: 76, color: "#1a1d24", letterSpacing: -3, lineHeight: 1 }}>
+          <div style={{ fontSize: 76, color: "#ffffff", letterSpacing: -3, lineHeight: 1 }}>
             {siteConfig.tagline}
           </div>
         </div>
 
-        <div style={{ fontSize: 24, color: "#62666e", maxWidth: 900, lineHeight: 1.4 }}>
+        <div style={{ fontSize: 24, color: "#b6c9dd", maxWidth: 900, lineHeight: 1.4 }}>
           Power is counted in seats, not tokens. Every war is declared twelve hours
           before it lands.
         </div>

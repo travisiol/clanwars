@@ -48,7 +48,7 @@ export function Ledger() {
               ].map((h, i) => (
                 <th
                   key={h}
-                  className={`type-label py-2.5 font-normal text-ink-mute ${i > 0 ? "text-right" : ""}`}
+                  className={`type-label py-2.5 font-normal text-chalk-muted ${i > 0 ? "text-right" : ""}`}
                 >
                   {h}
                 </th>
@@ -65,36 +65,36 @@ export function Ledger() {
                       style={{ background: INKS[c.ink], borderRadius: 1 }}
                       aria-hidden
                     />
-                    <span className="type-data text-ink">{c.name}</span>
-                    <span className="type-data text-ink-mute">{c.tag}</span>
+                    <span className="type-data text-chalk">{c.name}</span>
+                    <span className="type-data text-chalk-muted">{c.tag}</span>
                   </span>
                 </td>
-                <td className="type-data py-2.5 text-right text-ink">
+                <td className="type-data py-2.5 text-right text-chalk">
                   {c.seats}
-                  <span className="text-ink-mute">/{SEATS_PER_CLAN}</span>
+                  <span className="text-chalk-muted">/{SEATS_PER_CLAN}</span>
                 </td>
-                <td className="type-data py-2.5 text-right text-ink">
+                <td className="type-data py-2.5 text-right text-chalk">
                   {c.hexes}
-                  <span className="text-ink-mute">/{c.capacity}</span>
+                  <span className="text-chalk-muted">/{c.capacity}</span>
                 </td>
-                <td className="type-data py-2.5 text-right text-ink">
+                <td className="type-data py-2.5 text-right text-chalk">
                   {Math.round(c.discipline * 100)}%
                 </td>
-                <td className="type-data py-2.5 text-right text-ink">
+                <td className="type-data py-2.5 text-right text-chalk">
                   {formatEth(c.perSeat, 4)}
                 </td>
-                <td className="type-data py-2.5 text-right text-ink-soft">
+                <td className="type-data py-2.5 text-right text-chalk-soft">
                   {formatEth(c.treasury, 2)}
                 </td>
-                <td className="type-data py-2.5 text-right text-ink-soft">
+                <td className="type-data py-2.5 text-right text-chalk-soft">
                   {c.wonAttacks}–{c.lostAttacks}
                 </td>
-                <td className="type-data py-2.5 text-right text-ink-soft">
+                <td className="type-data py-2.5 text-right text-chalk-soft">
                   {c.heldOff}
-                  <span className="text-ink-mute"> / </span>
-                  <span className={c.overrun > 4 ? "text-war" : undefined}>{c.overrun}</span>
+                  <span className="text-chalk-muted"> / </span>
+                  <span className={c.overrun > 4 ? "text-loss" : undefined}>{c.overrun}</span>
                 </td>
-                <td className="type-data py-2.5 text-right text-ink-mute">{c.room}</td>
+                <td className="type-data py-2.5 text-right text-chalk-muted">{c.room}</td>
               </tr>
             ))}
           </tbody>
@@ -102,16 +102,16 @@ export function Ledger() {
       </div>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
-        <p className="type-body max-w-[62ch] text-ink-soft">
+        <p className="type-body max-w-[62ch] text-chalk-soft">
           The three quietest clans — {quiet.map((c) => c.tag).join(", ")}, answering{" "}
           {Math.round((quiet.reduce((n, c) => n + c.discipline, 0) / 3) * 100)}% of a muster —
-          lost <span className="text-ink">{lost(quiet)} hexes</span> between them this season.
+          lost <span className="text-chalk">{lost(quiet)} hexes</span> between them this season.
           The three loudest — {loud.map((c) => c.tag).join(", ")}, at{" "}
           {Math.round((loud.reduce((n, c) => n + c.discipline, 0) / 3) * 100)}% — lost{" "}
-          <span className="text-ink">{lost(loud)}</span>. Both groups hold their ground on the
+          <span className="text-chalk">{lost(loud)}</span>. Both groups hold their ground on the
           same rules and pay the same fee. The difference is who is in the chat.
         </p>
-        <p className="type-data text-ink-mute sm:text-right">
+        <p className="type-data text-chalk-muted sm:text-right">
           Rooms are named by their clans.
           <br />
           Nothing here resolves to a real one yet.
