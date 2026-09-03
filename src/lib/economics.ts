@@ -127,16 +127,6 @@ export function tokenWeightedIncome(pot: bigint, balance: bigint): bigint {
   return (pot * balance) / SUPPLY;
 }
 
-export function fiftyIncome(
-  perHex: bigint,
-  clanHexes: number,
-  clanSeats: number,
-  seatsOccupied: number,
-): bigint {
-  const income = clanEpochIncome(perHex, clanHexes);
-  return seatIncome(income, clanSeats) * BigInt(Math.max(0, Math.floor(seatsOccupied)));
-}
-
 /**
  * Seats a balance can occupy: one stake each, and never more than a clan has.
  * The floor is the gate — a balance of a hundred stakes still occupies fifty

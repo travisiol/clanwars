@@ -1,4 +1,4 @@
-# FIFTY
+# CLANSWAR
 
 **Fifty seats. One banner. One border.**
 
@@ -7,12 +7,18 @@ Holders sit in clans of fifty; clans hold hexes; hexes pay the trading fees;
 and a clan takes ground by voting for it in the open, twelve hours before the
 blow lands.
 
-The brief called this "Clan Wars". That is a mode of *Clash of Clans* and not
-a brand anyone can own, so the working name is **FIFTY** — the cap is the
-mechanic. It lives in three strings in `src/lib/site-config.ts` (`name`,
-`wordmark`, `ticker`) plus the `NEXT_PUBLIC_FIFTY_*` env prefix, and nothing
-else on the site spells it out. Renaming is those three strings and the
-prefix. The folder on disk is `clanwars`; that is not the name.
+Named **CLANSWAR** by the user on 2026-09-03, over the working name FIFTY.
+Worth writing down rather than rediscovering: "Clan Wars" is a mode of *Clash
+of Clans*, and CLANSWAR sits one letter from it — fine as a ticker-and-domain
+brand, a real question if anyone ever files a mark. Ticker `$CLANS`;
+`$CLANSWAR` is too long to sit in a header chip and `$WAR` is generic enough
+to already be several things.
+
+The name lives in three strings in `src/lib/site-config.ts` (`name`,
+`wordmark`, `ticker`) plus the `NEXT_PUBLIC_CLANSWAR_*` env prefix, and
+nothing else spells it out — the hero reads `siteConfig.wordmark`. Renaming
+again is those three strings and the prefix. The folder on disk is `clanwars`,
+which now happens to be close, but it is still not the name.
 
 ```bash
 npm install

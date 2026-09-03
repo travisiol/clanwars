@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Label } from "@/components/ui/Label";
 import { board } from "@/lib/board";
-import { formatEth, formatBps } from "@/lib/economics";
+import { clanCeilingBps, formatEth, formatBps } from "@/lib/economics";
 import { HEX_COUNT } from "@/lib/hex";
 import { DUG_IN_CAP, MUSTER_HOURS, SEATS_PER_CLAN, holdCapacity } from "@/lib/rules";
 import { siteConfig } from "@/lib/site-config";
@@ -46,7 +47,7 @@ export function Drawer() {
       title: "The money",
       items: [
         { label: "What a seat pays", tab: "seat", note: `${formatEth(b.perHex / 2n, 4)} ETH` },
-        { label: "The ceiling", tab: "seat", note: formatBps(1152) },
+        { label: "The ceiling", tab: "seat", note: formatBps(clanCeilingBps()) },
         { label: "Fee split", tab: "questions", note: "100% to clans" },
       ],
     },
@@ -79,61 +80,71 @@ export function Drawer() {
         ))}
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-[60] flex">
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={() => setOpen(false)}
-            className="flex-1 bg-void/80"
-          />
-          <nav className="w-[320px] max-w-[86vw] overflow-y-auto border-l border-rule bg-field">
-            <div className="flex items-center justify-between border-b border-rule px-5 py-4">
-              <Label className="text-chalk">{siteConfig.name}</Label>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label="Close menu"
-                className="type-data px-2 text-chalk-muted transition-colors duration-150 hover:text-gold"
-              >
-                ✕
-              </button>
-            </div>
-
-            {groups.map((group) => (
-              <div key={group.title} className="border-b border-rule px-5 py-4">
-                <Label>{group.title}</Label>
-                <ul className="mt-3 space-y-1">
-                  {group.items.map((item) => (
-                    <li key={item.label}>
-                      <button
-                        type="button"
-                        onClick={() => go(item.tab)}
-                        className="group flex w-full items-baseline justify-between gap-3 py-1.5 text-left"
-                      >
-                        <span className="type-body text-chalk-soft transition-colors duration-150 group-hover:text-gold">
-                          {item.label}
-                        </span>
-                        <span className="type-data shrink-0 text-chalk-muted">{item.note}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+      {/*
+        Portalled to the body on purpose. This lives inside the header, and the
+        header carries `backdrop-blur` — a backdrop-filter makes an element a
+        containing block for its fixed-position descendants, so `fixed inset-0`
+        resolved against the 64px rail instead of the viewport and the menu came
+        out one row tall. Nothing about the markup looked wrong; the whole
+        failure was a filter three levels up.
+      */}
+      {open &&
+        createPortal(
+            <div className="fixed inset-0 z-[60] flex">
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setOpen(false)}
+              className="flex-1 bg-void/80"
+            />
+            <nav className="w-[320px] max-w-[86vw] overflow-y-auto border-l border-rule bg-field">
+              <div className="flex items-center justify-between border-b border-rule px-5 py-4">
+                <Label className="text-chalk">{siteConfig.name}</Label>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close menu"
+                  className="type-data px-2 text-chalk-muted transition-colors duration-150 hover:text-gold"
+                >
+                  ✕
+                </button>
               </div>
-            ))}
 
-            <div className="px-5 py-5">
-              <Label>The rule, in one line</Label>
-              <p className="type-body mt-2 text-chalk-soft">
-                {SEATS_PER_CLAN} seats to a clan, two seats hold one hex, so a full clan holds{" "}
-                {holdCapacity(SEATS_PER_CLAN)} of {HEX_COUNT}. An attack is voted in the open for{" "}
-                {MUSTER_HOURS} hours; attack is the yes votes, defence is up to {DUG_IN_CAP} for
-                holding the ground plus every seat that answers. A tie holds for the defender.
-              </p>
-            </div>
-          </nav>
-        </div>
-      )}
+              {groups.map((group) => (
+                <div key={group.title} className="border-b border-rule px-5 py-4">
+                  <Label>{group.title}</Label>
+                  <ul className="mt-3 space-y-1">
+                    {group.items.map((item) => (
+                      <li key={item.label}>
+                        <button
+                          type="button"
+                          onClick={() => go(item.tab)}
+                          className="group flex w-full items-baseline justify-between gap-3 py-1.5 text-left"
+                        >
+                          <span className="type-body text-chalk-soft transition-colors duration-150 group-hover:text-gold">
+                            {item.label}
+                          </span>
+                          <span className="type-data shrink-0 text-chalk-muted">{item.note}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+
+              <div className="px-5 py-5">
+                <Label>The rule, in one line</Label>
+                <p className="type-body mt-2 text-chalk-soft">
+                  {SEATS_PER_CLAN} seats to a clan, two seats hold one hex, so a full clan holds{" "}
+                  {holdCapacity(SEATS_PER_CLAN)} of {HEX_COUNT}. An attack is voted in the open for{" "}
+                  {MUSTER_HOURS} hours; attack is the yes votes, defence is up to {DUG_IN_CAP} for
+                  holding the ground plus every seat that answers. A tie holds for the defender.
+                </p>
+              </div>
+            </nav>
+            </div>,
+          document.body,
+        )}
     </>
   );
 }

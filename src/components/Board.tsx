@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
 import { board } from "@/lib/board";
 import { HEX_COUNT } from "@/lib/hex";
+import { siteConfig } from "@/lib/site-config";
 import { useUi } from "@/lib/ui-state";
 
 /*
@@ -153,7 +154,7 @@ export function Board() {
           <div className="pitch w-full max-w-[520px] lg:pointer-events-auto">
             <Label className="text-gold">Simulated season · Robinhood Chain</Label>
 
-            <h1 className="type-hero wordmark-outline mt-4 text-chalk">Fifty</h1>
+            <h1 className="type-hero wordmark-outline mt-4 text-chalk">{siteConfig.wordmark}</h1>
             <p className="type-display mt-3 text-gold">Take a seat</p>
             <p className="type-display text-chalk">hold the ground</p>
 
