@@ -1,0 +1,307 @@
+@import "tailwindcss";
+
+/*
+ * FIFTY — fifty seats, one banner, one border.
+ *
+ * The page is a printed campaign map lying on a table, and the design
+ * question it answers is which line on that map is heavy.
+ *
+ * On every other territory game the answer is the tile: bevelled, glowing,
+ * tiered, rare. That is a game about real estate, and it teaches the reader
+ * that some ground is worth more than other ground. Here all 217 hexes pay
+ * exactly the same, so a tile that looks precious would be lying. What
+ * differs between two hexes is who is standing on the other side of them.
+ *
+ * So the tiles are flat printed ink — no bevel, no glow, no depth — and the
+ * only heavy line on the whole map is the FRONT: the edge where two clans
+ * touch. Zoom out and the map reads as a shape made of borders. That is the
+ * argument, drawn rather than written.
+ *
+ * Three materials, and nothing else is allowed to be a material.
+ *
+ *   PAPER is the ground. Warm bone, the colour of a map that has been folded
+ *   a few times, with the plate texture of offset printing rather than the
+ *   glow of a screen. Nothing on this page emits light.
+ *
+ *   INK is a clan. Twelve plate colours, all held at roughly the same
+ *   darkness so no clan reads as more important than another — the ranking
+ *   happens in the table, not in the palette. A clan is its ink everywhere:
+ *   on the map, in the table, on its roster of fifty seats.
+ *
+ *   VERMILION is war, and only war. It marks an open vote, the front it is
+ *   being fought over, and nothing else — not a button, not a link, not an
+ *   error, not a heading. Before a single vote is open the page contains no
+ *   red at all, which is the correct amount of red for a war nobody has
+ *   declared.
+ *
+ * The counting is done in mono and it is done in seats. Every figure on this
+ * page that means power is an integer between 0 and 50, because that is what
+ * the rules count, and a design that rendered power as a bar or a percentage
+ * would be smoothing over the one number a member can actually change.
+ */
+:root {
+  /* The table. Warm, printed, slightly foxed at the edges. */
+  --paper: #efeae0;
+  --paper-lit: #f7f4ec;
+  --paper-deep: #e3dcce;
+  --paper-sunk: #d8d0c0;
+
+  --ink: #1a1d24;
+  --ink-soft: #464b55;
+  /* Measured, not eyeballed, and measured on the DARKEST ground it ever
+     lands on rather than the lightest: 5.2:1 on --paper, 4.6:1 on
+     --paper-deep, which is the top of a sunk sheet. The 10px annotations are
+     the smallest type on the page and they were the first thing to fail. */
+  --ink-mute: #5d6168;
+
+  --rule: rgba(26, 29, 36, 0.14);
+  --rule-strong: rgba(26, 29, 36, 0.32);
+
+  /* War. Measured 5.0:1 on --paper. Nothing else may use it. */
+  --war: #b23a22;
+  --war-soft: rgba(178, 58, 34, 0.3);
+  --war-faint: rgba(178, 58, 34, 0.09);
+
+  /* The twelve plate inks. Held at one darkness on purpose — see above. */
+  --clan-0: #7b3b34;
+  --clan-1: #47604f;
+  --clan-2: #3b5a76;
+  --clan-3: #86691f;
+  --clan-4: #63405c;
+  --clan-5: #26635f;
+  --clan-6: #545a3e;
+  --clan-7: #3a4270;
+  --clan-8: #7a5630;
+  --clan-9: #55606b;
+  --clan-10: #56504a;
+  --clan-11: #6e3f52;
+
+  --shadow: rgba(26, 29, 36, 0.15);
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-lit: var(--paper-lit);
+  --color-paper-deep: var(--paper-deep);
+  --color-paper-sunk: var(--paper-sunk);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-mute: var(--ink-mute);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-war: var(--war);
+  --color-war-soft: var(--war-soft);
+  --color-war-faint: var(--war-faint);
+
+  --font-sans: "Familjen Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    /* Paper, not a gradient: a fine plate tooth plus the uneven warmth of a
+       sheet that has been under a lamp. Fixed, so it does not slide with the
+       content and give the page a parallax it has not earned. */
+    background-image:
+      radial-gradient(100% 60% at 15% -5%, rgba(255, 253, 246, 0.9), transparent 60%),
+      radial-gradient(80% 50% at 95% 12%, rgba(214, 203, 184, 0.35), transparent 62%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background: var(--ink);
+    color: var(--paper-lit);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /*
+   * Type. One grotesque across the whole range at weight 400 — including the
+   * 100px headline. A display line set in bold is shouting, and a page whose
+   * entire argument is "the ceiling is fifty and here is the arithmetic" does
+   * not need to shout. Numbers are mono and tabular everywhere without
+   * exception, because every important number here is a count of seats and
+   * counts that jitter while they update read as animation, not as readings.
+   */
+  .type-display {
+    font-size: clamp(2.9rem, 8.6vw, 6.75rem);
+    line-height: 0.92;
+    letter-spacing: -0.038em;
+    font-weight: 400;
+  }
+
+  .type-head {
+    font-size: clamp(1.7rem, 3.6vw, 2.7rem);
+    line-height: 1.04;
+    letter-spacing: -0.026em;
+    font-weight: 400;
+  }
+
+  .type-sub {
+    font-size: clamp(1.05rem, 1.75vw, 1.32rem);
+    line-height: 1.44;
+    letter-spacing: -0.015em;
+    font-weight: 400;
+  }
+
+  .type-body {
+    font-size: 0.95rem;
+    line-height: 1.64;
+    letter-spacing: -0.004em;
+  }
+
+  /* Marginalia on the printed sheet. Mono, tracked wide, never bold. */
+  .type-label {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    line-height: 1.2;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .type-data {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .type-figure {
+    font-family: var(--font-mono);
+    font-size: clamp(1.2rem, 2.3vw, 1.7rem);
+    line-height: 1.05;
+    letter-spacing: -0.045em;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .type-figure-lg {
+    font-family: var(--font-mono);
+    font-size: clamp(2.1rem, 5.4vw, 3.6rem);
+    line-height: 1;
+    letter-spacing: -0.055em;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+   * A sheet is a piece of paper on the table: a hairline, a 2px corner, and
+   * the faintest lift. No radius above 2px on anything rectangular, 999px on
+   * anything pressed, and nothing in between — the map is made of straight
+   * facets and a rounded card next to it looks like it came from a different
+   * printer.
+   */
+  .sheet {
+    background: linear-gradient(180deg, var(--paper-lit), var(--paper));
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.75),
+      0 1px 2px rgba(26, 29, 36, 0.05),
+      0 12px 26px -22px var(--shadow);
+  }
+
+  .sheet-sunk {
+    background: linear-gradient(180deg, var(--paper-deep), var(--paper));
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    box-shadow: inset 0 2px 5px -3px rgba(26, 29, 36, 0.16);
+  }
+
+  /* The sheet a war is printed on. The only red frame on the page. */
+  .sheet-war {
+    background: linear-gradient(180deg, var(--paper-lit), var(--paper));
+    border: 1px solid var(--war-soft);
+    border-radius: 2px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.75),
+      0 12px 26px -22px var(--shadow);
+  }
+
+  /* Fold marks under the map. Construction, so they sit below everything. */
+  .fold-grid {
+    background-image:
+      linear-gradient(to right, var(--rule) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--rule) 1px, transparent 1px);
+    background-size: 72px 72px;
+    -webkit-mask-image: radial-gradient(70% 64% at 50% 48%, #000 18%, transparent 76%);
+    mask-image: radial-gradient(70% 64% at 50% 48%, #000 18%, transparent 76%);
+  }
+
+  .rule-h {
+    height: 1px;
+    background: var(--rule);
+  }
+
+  /*
+   * A seat. Fifty of these make a roster, so it has to survive being 8px
+   * square: filled means taken, hairline means empty, and a ring means the
+   * seat has been committed this epoch and cannot vote again.
+   */
+  .seat {
+    border-radius: 1px;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  /* Open. The pulse is slow and never goes out — a vote that is running must
+     not read as a thing that is broken. */
+  .open-vote {
+    animation: open-vote 2.6s ease-in-out infinite;
+  }
+
+  @keyframes open-vote {
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .rise {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: rise 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes rise {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
