@@ -84,6 +84,20 @@ whoever has the most money. What differs between two hexes is who is standing
 on the other side of them — which is why the only heavy line on the map is the
 front.
 
+## What the site says about its own state
+
+Nothing is deployed, and the site says exactly that in plain language —
+**Awaiting launch**, in the header, on the pitch, on the ticker, and on the
+one control that would move money. It does not describe itself as a demo, a
+preview or a simulation anywhere a visitor can see, at the user's direction.
+
+Everything a visitor reads is therefore either a rule or a rate: the ticker
+carries the rules rather than events, the header chips are the four constants
+rather than a scoreboard, and the earnings table gives what the fee pays at
+three volumes rather than one flattering figure. The board is still generated
+by `sim.ts` — that is how it has the shape of a played season — but no copy on
+the page claims anybody has played it.
+
 ## The shape of the site
 
 One screen, no scroll on desktop: the board fills it, the pitch sits beside it,

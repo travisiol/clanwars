@@ -11,7 +11,6 @@ import { WarCard, WarList } from "@/components/War";
 import { Label } from "@/components/ui/Label";
 import { board } from "@/lib/board";
 import { SEAT_STAKE, formatTokens } from "@/lib/economics";
-import { plural } from "@/lib/format";
 import { HEX_COUNT } from "@/lib/hex";
 import {
   DUG_IN_CAP,
@@ -49,6 +48,25 @@ export function HowItWorks() {
 
   return (
     <div className="space-y-10">
+      <div>
+        <h2 className="type-title text-chalk">The game in four lines</h2>
+        <ul className="mt-4 max-w-[70ch] space-y-2">
+          {[
+            `The map is ${HEX_COUNT} hexes. Clans hold them; ${SEATS_PER_HEX} seats hold one hex.`,
+            `A clan is ${SEATS_PER_CLAN} people, one wallet each. That cap is the whole design.`,
+            "Every trade pays a 2% fee. All of it goes to the clans holding ground, split equally between their seats.",
+            `To take a hex off somebody, your clan votes for it in public and the vote stands open for ${MUSTER_HOURS} hours. Whoever got more of their fifty to show up wins it.`,
+          ].map((line, i) => (
+            <li key={i} className="flex gap-3">
+              <span className="type-label mt-1 shrink-0 text-gold">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="type-body text-chalk-soft">{line}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <Band
         label="How a holder earns"
         steps={[
@@ -121,9 +139,7 @@ export function HowItWorks() {
       />
 
       <div>
-        <Label className="text-gold">
-          Open right now — {b.wars.length} {plural(b.wars.length, "vote")}
-        </Label>
+        <Label className="text-gold">What a war looks like while it is being voted on</Label>
         <div className="mt-4 grid gap-5 lg:grid-cols-2">
           {b.wars.map((w) => (
             <WarCard key={`${w.attacker}-${w.hex}`} w={w} />

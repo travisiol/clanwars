@@ -27,10 +27,12 @@ import {
   SUPPLY,
   WAD,
   clanCeilingBps,
+  epochPot,
   formatBps,
   formatEth,
   formatTokens,
   seatIncome,
+  settle,
   tokenWeightedIncome,
 } from "@/lib/economics";
 import { HEX_COUNT } from "@/lib/hex";
@@ -64,10 +66,81 @@ export function Seat() {
 
   const ticks = Array.from({ length: 5 }, (_, i) => (yMax / 4) * i);
 
+  /*
+   * The answer to the only question a visitor actually arrives with, at three
+   * volumes so nobody has to trust a single flattering one. Run through the
+   * same fee and settlement functions the game uses rather than multiplied out
+   * by hand — a rate table that drifts from the contract is worse than none.
+   */
+  const rates = [100n, 400n, 1_000n].map((volume) => {
+    const daily = volume * WAD;
+    const pot = epochPot((daily * 52n) / 100n, daily - (daily * 52n) / 100n);
+    const perHex = settle(pot, 0n, HEX_COUNT).perHex;
+    const seat = perHex / BigInt(SEATS_PER_HEX);
+    return { volume, pot, perHex, seat, month: seat * 30n };
+  });
+
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-10">
-      <div>
-        <figure className="border border-rule bg-field p-4 sm:p-5">
+      <div className="min-w-0 lg:col-span-2">
+        <h2 className="type-title text-chalk">What a seat is paid</h2>
+        <p className="type-body mt-3 max-w-[70ch] text-chalk-soft">
+          Every buy and every sell pays a 2% fee, and all of it goes to the clans
+          holding the map. It is cut into {HEX_COUNT} equal shares, one per hex, and
+          each clan splits its share equally between its {SEATS_PER_CLAN} seats. A full
+          clan holds {fullCapacity} hexes with {SEATS_PER_CLAN} seats, so one seat is
+          paid half of one hex.
+        </p>
+
+        <div className="mt-5 w-full overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse">
+            <thead>
+              <tr className="border-b border-rule-strong text-left">
+                {["Trading, a day", "Fee to clans", "One hex", "One seat, a day", "One seat, a month"].map(
+                  (h, i) => (
+                    <th
+                      key={h}
+                      className={`type-label py-2.5 font-normal text-chalk-muted ${i > 0 ? "text-right" : ""}`}
+                    >
+                      {h}
+                    </th>
+                  ),
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {rates.map((r) => (
+                <tr key={String(r.volume)} className="border-b border-rule">
+                  <td className="type-data py-2.5 text-chalk">
+                    {r.volume.toLocaleString("en-US")} ETH
+                  </td>
+                  <td className="type-data py-2.5 text-right text-chalk-soft">
+                    {formatEth(r.pot, 2)}
+                  </td>
+                  <td className="type-data py-2.5 text-right text-chalk-soft">
+                    {formatEth(r.perHex, 4)}
+                  </td>
+                  <td className="type-data py-2.5 text-right text-gold">
+                    {formatEth(r.seat, 4)}
+                  </td>
+                  <td className="type-data py-2.5 text-right text-chalk">
+                    {formatEth(r.month, 3)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p className="type-data mt-3 text-chalk-muted">
+          A seat stakes {formatTokens(SEAT_STAKE)} tokens. Those figures are what the
+          rules pay at those volumes — nothing here is a forecast of the volume.
+        </p>
+      </div>
+
+      <div className="min-w-0">
+        <h2 className="type-title text-chalk">Why buying more earns nothing</h2>
+        <figure className="mt-4 border border-rule bg-field p-4 sm:p-5">
           <figcaption className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
             <Label className="text-gold">One wallet, one day, both rules</Label>
             <span className="type-data text-chalk-muted">

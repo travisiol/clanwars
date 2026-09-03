@@ -5,7 +5,7 @@ import { Faq } from "@/components/Faq";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Ledger } from "@/components/Ledger";
 import { Seat } from "@/components/Seat";
-import { Label } from "@/components/ui/Label";
+import { Awaiting } from "@/components/ui/Label";
 import { useUi, type InfoTab } from "@/lib/ui-state";
 
 /*
@@ -17,8 +17,8 @@ import { useUi, type InfoTab } from "@/lib/ui-state";
  * understand on arrival.
  */
 const tabs = [
-  { id: "how", label: "How it works", Panel: HowItWorks },
-  { id: "seat", label: "The seat", Panel: Seat },
+  { id: "how", label: "How to play", Panel: HowItWorks },
+  { id: "seat", label: "How you earn", Panel: Seat },
   { id: "clans", label: "Clans", Panel: Ledger },
   { id: "questions", label: "Questions", Panel: Faq },
 ] as const;
@@ -84,10 +84,7 @@ export function InfoOverlay({
           <Panel />
         </div>
         <div className="mx-auto w-full max-w-[1100px] px-4 pb-12 sm:px-6">
-          <Label>
-            Every figure here comes out of a season played by these rules. Nothing is
-            deployed.
-          </Label>
+          <Awaiting>Awaiting launch — no contracts are live yet</Awaiting>
         </div>
       </div>
     </div>

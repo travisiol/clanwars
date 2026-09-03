@@ -1,8 +1,5 @@
 "use client";
 
-import { board } from "@/lib/board";
-import { formatEth } from "@/lib/economics";
-import { plural } from "@/lib/format";
 import { HEX_COUNT } from "@/lib/hex";
 import { SEATS_PER_CLAN, holdCapacity } from "@/lib/rules";
 
@@ -16,25 +13,28 @@ import { SEATS_PER_CLAN, holdCapacity } from "@/lib/rules";
  * touch the map.
  */
 export function Ticker() {
-  const b = board();
-  const quietest = [...b.clans].sort((x, y) => x.discipline - y.discipline)[0];
-
+  /*
+   * Rules and rates, not events. The strip is the first thing a visitor reads
+   * and it has one job: say what the game is and how it pays, in sentences
+   * short enough to catch out of the corner of an eye. Nothing here claims
+   * anybody has done anything yet — the chip on the left says the state.
+   */
   const lines = [
-    `${b.ownedHexes} of ${HEX_COUNT} hexes held, ${b.neutralHexes} still grass`,
-    `${b.totalSeats} seats taken across ${b.clans.length} clans`,
-    `Every hex pays ${formatEth(b.perHex, 4)} ETH a day — all ${HEX_COUNT} the same`,
+    "Every trade pays 2% — all of it goes to the clans holding the map",
+    `${SEATS_PER_CLAN} seats to a clan, one wallet one seat`,
+    `Two seats hold one hex; a full clan holds ${holdCapacity(SEATS_PER_CLAN)} of ${HEX_COUNT}`,
     "Fees are split by seat, not by balance",
-    `A full clan holds ${holdCapacity(SEATS_PER_CLAN)} hexes; the board fits eight of them`,
-    `${b.wars.length} war ${plural(b.wars.length, "vote")} open right now`,
-    `${quietest.tag} answers ${Math.round(quietest.discipline * 100)}% of a muster and has been overrun ${quietest.overrun} times`,
-    "Every attack is public for twelve hours before it lands",
+    "Buying more tokens earns you nothing — taking a seat does",
+    "Every attack is voted in the open, twelve hours before it lands",
+    "A tie holds for the defender",
+    `All ${HEX_COUNT} hexes pay the same share — what differs is who is next to you`,
   ];
 
   return (
     <div className="flex items-stretch border-t border-rule bg-void">
       <span className="flex shrink-0 items-center gap-2 border-r border-rule px-4 py-2.5">
         <span className="h-2 w-2 bg-gold" />
-        <span className="type-label text-gold">Simulated</span>
+        <span className="type-label text-gold">Awaiting launch</span>
       </span>
 
       <div className="relative flex-1 overflow-hidden">
@@ -56,9 +56,7 @@ export function Ticker() {
       </div>
 
       <span className="hidden shrink-0 items-center border-l border-rule px-4 py-2.5 sm:flex">
-        <span className="type-label text-chalk-muted">
-          {b.ownedHexes} / {HEX_COUNT} held
-        </span>
+        <span className="type-label text-chalk-muted">2% fee · 100% to clans</span>
       </span>
     </div>
   );

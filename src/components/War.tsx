@@ -198,7 +198,7 @@ export function WarList({ limit = 8 }: { limit?: number }) {
   return (
     <div className="border border-rule">
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-rule px-4 py-3">
-        <Label className="text-chalk">Settled — the last of the season</Label>
+        <Label className="text-chalk">How a war settles</Label>
         <span className="type-data text-chalk-muted">
           attack v. defence, {MUSTER_HOURS}-hour window
         </span>

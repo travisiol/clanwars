@@ -2,9 +2,7 @@
 
 import { Drawer } from "@/components/Drawer";
 import { WalletConnect } from "@/components/WalletConnect";
-import { Label } from "@/components/ui/Label";
-import { board } from "@/lib/board";
-import { formatWindow } from "@/lib/format";
+import { Awaiting, Label } from "@/components/ui/Label";
 import { HEX_COUNT } from "@/lib/hex";
 import { SEATS_PER_CLAN } from "@/lib/rules";
 import { siteConfig } from "@/lib/site-config";
@@ -35,18 +33,17 @@ function Mark() {
 }
 
 export function Navbar() {
-  const b = board();
   const { openInfo, pick } = useUi();
-  const soonest = b.wars.reduce<number | null>(
-    (best, w) => (best === null ? w.minutesLeft : Math.min(best, w.minutesLeft)),
-    null,
-  );
-
+  /*
+   * The rules, not a scoreboard. "215 held / 491 seats" read as a report on a
+   * game that is running, which is not the state — and the four numbers that
+   * never change are more use to somebody meeting this for the first time.
+   */
   const chips = [
     { key: "Hexes", value: String(HEX_COUNT) },
-    { key: "Held", value: String(b.ownedHexes) },
-    { key: "Clans", value: String(b.clans.length) },
-    { key: "Seats", value: `${b.totalSeats} / ${b.clans.length * SEATS_PER_CLAN}` },
+    { key: "Seats a clan", value: String(SEATS_PER_CLAN) },
+    { key: "Fee", value: "2% / 2%" },
+    { key: "To clans", value: "100%" },
   ];
 
   return (
@@ -80,18 +77,17 @@ export function Navbar() {
         </ul>
 
         <div className="ml-auto flex items-center gap-3">
-          {soonest !== null && (
-            <button
-              type="button"
-              onClick={() => openInfo("how")}
-              title="A war vote is open. It resolves when the window closes."
-              className="hidden items-center gap-2 border border-gold/40 bg-gold/10 px-2.5 py-1.5 transition-colors duration-150 hover:border-gold sm:flex"
-            >
-              <span className="open-vote h-1.5 w-1.5 bg-gold" aria-hidden />
-              <span className="type-label text-gold">Vote closes</span>
-              <span className="type-data text-gold">{formatWindow(soonest)}</span>
-            </button>
-          )}
+          {/* This used to be a ticking vote countdown, which was the loudest
+              claim on the page that something was already running. The state
+              is what belongs in the corner until it isn't. */}
+          <button
+            type="button"
+            onClick={() => openInfo("how")}
+            title="Nothing has launched yet. Read how it works."
+            className="hidden transition-colors duration-150 hover:opacity-80 sm:block"
+          >
+            <Awaiting />
+          </button>
           <button
             type="button"
             onClick={() => openInfo("how")}

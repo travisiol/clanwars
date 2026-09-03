@@ -11,7 +11,6 @@
  * the correlation, the sentence changes with it.
  */
 
-import { Label } from "@/components/ui/Label";
 import { board } from "@/lib/board";
 import { formatEth } from "@/lib/economics";
 import { INKS } from "@/lib/inks";
@@ -116,9 +115,6 @@ export function Ledger() {
           <br />
           Nothing here resolves to a real one yet.
         </p>
-      </div>
-      <div className="mt-4">
-        <Label>Simulated season, epoch {b.epoch}</Label>
       </div>
     </div>
   );

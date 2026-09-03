@@ -44,10 +44,17 @@ function useWalletAvailable(): boolean {
 export function WalletConnect({
   className,
   wrapperClassName,
+  variant = "outline",
   showHint = true,
 }: {
   className?: string;
   wrapperClassName?: string;
+  /**
+   * `solid` is gold and belongs to the one place connecting is the point of
+   * the screen. Everywhere else the wallet is a utility and wears an outline —
+   * two gold buttons in one view and neither of them means anything.
+   */
+  variant?: "solid" | "outline";
   /**
    * The explanation under the button. On by default, because a disabled button
    * with no reason is the thing this component exists to avoid — but in a 56px
@@ -62,7 +69,11 @@ export function WalletConnect({
   const { mutate: switchChain, isPending: isSwitching } = useSwitchChain();
   const walletAvailable = useWalletAvailable();
 
-  const shell = "type-label rounded-full px-3.5 py-2 transition-colors duration-150";
+  const shell = "type-label px-4 py-3 transition-colors duration-150";
+  const solid =
+    "bg-gold text-void hover:bg-gold-bright disabled:cursor-not-allowed disabled:bg-transparent disabled:text-chalk-muted disabled:ring-1 disabled:ring-rule-strong disabled:ring-inset";
+  const outline =
+    "text-chalk ring-1 ring-rule-strong ring-inset hover:border-gold hover:text-gold disabled:cursor-not-allowed disabled:text-chalk-muted";
 
   if (isConnected && address) {
     if (chainId !== robinhoodChain.id) {
@@ -71,7 +82,7 @@ export function WalletConnect({
           type="button"
           onClick={() => switchChain({ chainId: robinhoodChain.id })}
           disabled={isSwitching}
-          className={clsx(shell, "bg-ink text-paper-lit hover:bg-ink-soft", className)}
+          className={clsx(shell, solid, className)}
         >
           {isSwitching ? "Switching…" : "Switch network"}
         </button>
@@ -84,11 +95,11 @@ export function WalletConnect({
         title="Disconnect wallet"
         className={clsx(
           shell,
-          "flex items-center gap-2 text-ink ring-1 ring-rule-strong ring-inset hover:bg-ink hover:text-paper-lit",
+          "flex items-center gap-2 text-chalk ring-1 ring-rule-strong ring-inset hover:text-gold",
           className,
         )}
       >
-        <span className="h-1.5 w-1.5 rounded-full bg-ink-soft" aria-hidden />
+        <span className="h-1.5 w-1.5 bg-gain" aria-hidden />
         {shortAddress(address)}
       </button>
     );
@@ -104,22 +115,18 @@ export function WalletConnect({
         disabled={!canConnect || isConnecting}
         onClick={() => connector && connect({ connector })}
         title={canConnect ? undefined : "No browser wallet detected on this device"}
-        className={clsx(
-          shell,
-          "bg-ink text-paper-lit hover:bg-ink-soft disabled:cursor-not-allowed disabled:bg-transparent disabled:text-ink-mute disabled:ring-1 disabled:ring-rule-strong disabled:ring-inset",
-          className,
-        )}
+        className={clsx(shell, variant === "solid" ? solid : outline, className)}
       >
         {isConnecting ? "Connecting…" : canConnect ? "Connect wallet" : "No wallet found"}
       </button>
 
       {showHint && connectError && (
-        <span className="type-data max-w-[240px] text-ink-soft">
+        <span className="type-data max-w-[240px] text-chalk-soft">
           {connectError.message.split("\n")[0]}
         </span>
       )}
       {showHint && !canConnect && !connectError && (
-        <span className="type-data max-w-[240px] text-ink-mute">
+        <span className="type-data max-w-[240px] text-chalk-muted">
           Install a browser wallet to connect.
         </span>
       )}

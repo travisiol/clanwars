@@ -8,9 +8,11 @@ import { InfoOverlay } from "@/components/InfoOverlay";
 import { Ticker } from "@/components/Ticker";
 import { WalletConnect } from "@/components/WalletConnect";
 import { Button } from "@/components/ui/Button";
-import { Label } from "@/components/ui/Label";
+import { Awaiting, Label } from "@/components/ui/Label";
 import { board } from "@/lib/board";
+import { SEAT_STAKE, WAD, formatEth, formatTokens } from "@/lib/economics";
 import { HEX_COUNT } from "@/lib/hex";
+import { SEATS_PER_CLAN, SEATS_PER_HEX } from "@/lib/rules";
 import { siteConfig } from "@/lib/site-config";
 import { useUi } from "@/lib/ui-state";
 
@@ -77,11 +79,34 @@ export function Board() {
     pick(held[Math.floor(Math.random() * held.length)] ?? 108);
   };
 
-  const pills = [
-    { key: "Chain", value: "Robinhood Chain" },
-    { key: "Clans", value: String(b.clans.length) },
-    { key: "Hexes held", value: `${b.ownedHexes} / ${HEX_COUNT}` },
-    { key: "Seats taken", value: String(b.totalSeats) },
+  /*
+   * What a seat is paid, on the front page and not three clicks in.
+   *
+   * A clan at capacity holds half its seats in hexes, so one seat's daily
+   * take is simply the per-hex share halved. It is the number a visitor is
+   * actually here for and it should not need an overlay to find.
+   */
+  const perSeatDaily = b.perHex / 2n;
+
+  /*
+   * Three lines, in the order a person does them, and one line each. They are
+   * rows rather than cards because the pitch has to survive a short laptop
+   * screen with the buttons still above the ticker — three stacked cards cost
+   * forty pixels the layout does not have.
+   */
+  const steps = [
+    {
+      head: "Take a seat",
+      body: `Lock ${formatTokens(SEAT_STAKE)} tokens. One wallet, one seat.`,
+    },
+    {
+      head: "Hold ground",
+      body: `${SEATS_PER_HEX} seats hold one hex. Vote to take more.`,
+    },
+    {
+      head: "Get paid",
+      body: "The 2% fee is split between the seats, daily.",
+    },
   ];
 
   return (
@@ -148,43 +173,61 @@ export function Board() {
         )}
       </div>
 
-      {/* The pitch, until a hex takes its place. */}
+      {/* The pitch, until a hex takes its place.
+
+          The scrim on it is not decoration: on a wide screen the copy sits
+          over a map that is bright all the way to its left rim, and text on
+          top of a hex grid is unreadable at any weight. It fades out well
+          before the board's centre so the map still reads as one object. */}
       {picked === null && (
-        <div className="relative z-10 w-full px-4 pt-8 pb-16 sm:px-8 lg:pointer-events-none lg:absolute lg:inset-y-0 lg:right-auto lg:flex lg:w-[46%] lg:items-center lg:py-0">
+        <div className="relative z-10 w-full px-4 pt-8 pb-16 sm:px-8 lg:pointer-events-none lg:absolute lg:inset-y-0 lg:right-auto lg:flex lg:w-[52%] lg:items-center lg:overflow-y-auto lg:bg-gradient-to-r lg:from-void lg:from-45% lg:to-transparent lg:py-6 lg:pr-16">
           <div className="pitch w-full max-w-[520px] lg:pointer-events-auto">
-            <Label className="text-gold">Simulated season · Robinhood Chain</Label>
+            <div className="flex flex-wrap items-center gap-3">
+              <Awaiting />
+              <Label>Robinhood Chain</Label>
+            </div>
 
             <h1 className="type-hero wordmark-outline mt-4 text-chalk">{siteConfig.wordmark}</h1>
-            <p className="type-display mt-3 text-gold">Take a seat</p>
-            <p className="type-display text-chalk">hold the ground</p>
+            <p className="type-display mt-3 text-gold">Join a clan</p>
+            <p className="type-display text-chalk">and earn</p>
 
             <p className="type-body mt-5 max-w-[46ch] text-chalk-soft">
-              Holders sit in clans of fifty. Clans hold hexes, hexes pay the trading
-              fees, and a clan takes ground by voting for it in the open — twelve hours
-              before the blow lands.
+              {SEATS_PER_CLAN} people to a clan. Your clan holds hexes on the map, every
+              trade pays a 2% fee, and all of it goes to the clans holding ground — one
+              equal share per seat.
             </p>
 
-            <dl className="mt-6 flex flex-wrap gap-2">
-              {pills.map((pill) => (
-                <div
-                  key={pill.key}
-                  className="flex items-baseline gap-2 border border-rule bg-void/70 px-3 py-2"
-                >
-                  <dt>
-                    <Label>{pill.key}</Label>
-                  </dt>
-                  <dd className="type-data text-chalk">{pill.value}</dd>
-                </div>
+            {/* The three things a person does, in the order they do them.
+                This used to live behind a button; it is the point of the page. */}
+            <ol className="mt-6 divide-y divide-rule border-y border-rule">
+              {steps.map((step, i) => (
+                <li key={step.head} className="flex flex-wrap items-baseline gap-x-3 py-2">
+                  <span className="type-label w-5 shrink-0 text-gold">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="type-data w-[92px] shrink-0 text-chalk">{step.head}</span>
+                  <span className="type-data min-w-0 flex-1 text-chalk-muted">{step.body}</span>
+                </li>
               ))}
-            </dl>
+            </ol>
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button onClick={openAHex}>
-                {b.wars.length > 0 ? "See the open war" : "Open a hex"}
+            <p className="type-data mt-4">
+              <span className="text-gold">
+                {formatEth(perSeatDaily, 4)} ETH a day per seat
+              </span>
+              <span className="text-chalk-soft">
+                {" "}
+                at {(b.volume / WAD).toLocaleString("en-US")} ETH of trading a day.
+              </span>
+            </p>
+
+            <div className="mt-6 flex flex-wrap items-start gap-3">
+              <WalletConnect variant="solid" wrapperClassName="max-w-[280px]" />
+              <Button variant="outline" onClick={openAHex}>
+                {"See a war"}
               </Button>
-              <WalletConnect className="border border-rule-strong px-4 py-3 text-chalk hover:border-gold hover:text-gold" />
               <Button variant="outline" onClick={() => openInfo("how")}>
-                How it works
+                How to play
               </Button>
             </div>
           </div>
@@ -195,11 +238,9 @@ export function Board() {
       {picked !== null && (
         <div className="relative z-10 hidden px-4 pt-6 pb-16 sm:block sm:px-8 lg:pointer-events-none lg:absolute lg:inset-x-0 lg:bottom-12 lg:pt-0">
           <div className="flex flex-wrap items-center gap-3 lg:pointer-events-auto">
-            <Label>
-              Simulated season · {b.ownedHexes} / {HEX_COUNT} held
-            </Label>
+            <Awaiting />
             <Button variant="outline" onClick={() => openInfo("how")}>
-              How it works
+              How to play
             </Button>
           </div>
         </div>

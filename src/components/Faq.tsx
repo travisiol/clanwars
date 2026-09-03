@@ -230,7 +230,7 @@ export function Faq() {
           ))}
         </dl>
         <p className="type-data mt-3 text-chalk-muted">
-          At the simulated season&apos;s volume, one hex pays {formatEth(b.perHex, 4)} ETH a day
+          At 380 ETH of trading a day, one hex pays {formatEth(b.perHex, 4)} ETH a day
           and a seat in a clan at capacity takes {formatEth(b.perHex / 2n, 4)} ETH.
         </p>
       </div>

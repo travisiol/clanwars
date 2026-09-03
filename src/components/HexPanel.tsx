@@ -211,7 +211,7 @@ export function HexPanel({ hex, onClose }: { hex: number; onClose: () => void })
       {/* ---- the act ---------------------------------------------------- */}
       <div className="mt-auto border-t border-rule px-5 py-5">
         <div className="flex flex-wrap gap-3">
-          <Button disabled={!mapIsLive} title={mapIsLive ? undefined : "Nothing is deployed yet"}>
+          <Button disabled={!mapIsLive} title={mapIsLive ? undefined : "Awaiting launch"}>
             {clan ? `Take a seat in ${clan.tag}` : "Claim this hex"}
           </Button>
           <WalletConnect className="border border-rule-strong px-4 py-3 text-chalk hover:border-gold hover:text-gold" />
@@ -219,7 +219,7 @@ export function HexPanel({ hex, onClose }: { hex: number; onClose: () => void })
         <p className="type-data mt-3 text-chalk-muted">
           {mapIsLive
             ? `A seat locks ${formatTokens(SEAT_STAKE)} tokens and pays the same as every other seat in the clan.`
-            : `Nothing is deployed. A seat will lock ${formatTokens(SEAT_STAKE)} tokens and pay the same as every other seat in its clan.`}
+            : `Awaiting launch. A seat locks ${formatTokens(SEAT_STAKE)} tokens and is paid the same as every other seat in its clan, whatever anyone’s balance.`}
         </p>
         <button
           type="button"

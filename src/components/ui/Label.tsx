@@ -13,15 +13,21 @@ export function Label({
 }
 
 /**
- * Marks the board as a played simulation rather than a chain reading.
+ * The state of the thing: not started yet.
  *
  * Sits inside whatever it labels rather than beside it, so a crop of a
- * screenshot still carries the word. Nothing is deployed; every figure on
- * this site comes out of a season played by the rules, and the moment that
- * stops being said clearly the rest of the numbers stop being worth
- * anything.
+ * screenshot still carries the words. It is the one disclosure this site
+ * makes and it is made in plain language — a visitor should be able to tell
+ * in one glance that nothing has opened yet, without having to decode a
+ * hedge.
  */
-export function SimTag({ className }: { className?: string }) {
+export function Awaiting({
+  children = "Awaiting launch",
+  className,
+}: {
+  children?: ReactNode;
+  className?: string;
+}) {
   return (
     <span
       className={clsx(
@@ -29,8 +35,8 @@ export function SimTag({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="h-1.5 w-1.5 bg-gold" />
-      Simulated season
+      <span className="open-vote h-1.5 w-1.5 bg-gold" aria-hidden />
+      {children}
     </span>
   );
 }
